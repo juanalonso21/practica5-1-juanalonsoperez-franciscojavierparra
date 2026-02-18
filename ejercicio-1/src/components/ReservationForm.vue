@@ -279,8 +279,7 @@ function handleReset() {
 
 <style scoped>
 form {
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
   padding: 20px;
 }
 fieldset {
