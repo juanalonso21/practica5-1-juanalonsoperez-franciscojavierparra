@@ -1,0 +1,14 @@
+/* Reset y estilos base para VueDining */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  color: #1f2937;
+  background: #f9fafb;
+  line-height: 1.6;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+}
