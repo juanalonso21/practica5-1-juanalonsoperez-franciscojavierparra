@@ -83,11 +83,11 @@ export function useValidation(formData: ReservationFormData) {
         return fields.every((field) => errors[field]?.isValid)
     })
 
-    // Porcentaje de progreso
+    // Porcentaje de progreso (solo cuenta campos tocados y válidos)
     const progress = computed(() => {
         const fields = Object.keys(validators)
         const validCount = fields.filter(
-            (field) => errors[field as keyof FormErrors]?.isValid,
+            (field) => errors[field as keyof FormErrors]?.isValid && errors[field as keyof FormErrors]?.touched,
         ).length
         return Math.round((validCount / fields.length) * 100)
     })
@@ -97,6 +97,30 @@ export function useValidation(formData: ReservationFormData) {
         const fields = Object.keys(errors) as (keyof FormErrors)[]
         fields.forEach((field) => delete errors[field])
     }
+
+    // Inicializar validación si ya hay datos (para persistencia después de F5)
+    function initializeValidation() {
+        const fields = Object.keys(validators) as (keyof ReservationFormData)[]
+        fields.forEach((field) => {
+            const value = formData[field]
+            // Validamos el campo (los validadores siempre ponen touched=true)
+            validateField(field)
+
+            // Si el campo está vacío / en su valor por defecto, quitamos touched
+            // para que no cuente en la barra de progreso ni muestre indicadores
+            const isEmpty =
+                (typeof value === 'string' && value.trim() === '') ||
+                (typeof value === 'number' && value === 10) || // 10 es el default de attendees
+                (Array.isArray(value) && value.length === 0) ||
+                (typeof value === 'boolean' && value === false)
+
+            if (isEmpty && errors[field]) {
+                errors[field]!.touched = false
+            }
+        })
+    }
+
+    initializeValidation()
 
     return {
         errors,
