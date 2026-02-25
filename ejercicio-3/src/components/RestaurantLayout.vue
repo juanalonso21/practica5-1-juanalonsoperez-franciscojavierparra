@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TableMap from './TableMap.vue'
 import ReservationForm from './ReservationForm.vue'
+import ReservationDetail from './ReservationDetail.vue'
 import { useRestaurantStore } from '@/stores/useRestaurantStore'
 
 const store = useRestaurantStore()
@@ -13,13 +14,14 @@ const store = useRestaurantStore()
       v-if="store.selectedTable && store.isTableAvailable(store.selectedTable.id)"
       :selected-table="store.selectedTable"
     />
-    <p v-else-if="store.selectedTableId && !store.isTableAvailable(store.selectedTableId)" class="occupied-msg">
-      Esta mesa está ocupada en este horario.
-    </p>
+    <ReservationDetail
+      v-else-if="store.viewingTable && store.viewingReservation"
+      :table="store.viewingTable"
+      :reservation="store.viewingReservation"
+    />
   </div>
 </template>
 
 <style scoped>
 .restaurant-layout { flex: 1; }
-.occupied-msg { color: #ef4444; margin-top: 12px; font-size: 0.9em; }
 </style>

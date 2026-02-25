@@ -7,6 +7,10 @@ const store = useRestaurantStore()
 function onTableSelect(tableId: number) {
   store.selectTable(tableId)
 }
+
+function onTableView(tableId: number) {
+  store.viewOccupiedTable(tableId)
+}
 </script>
 
 <template>
@@ -18,6 +22,7 @@ function onTableSelect(tableId: number) {
         :key="table.id"
         :table-data="table"
         @select="onTableSelect"
+        @view="onTableView"
       />
     </div>
     <div class="legend">

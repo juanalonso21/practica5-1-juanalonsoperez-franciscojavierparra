@@ -81,6 +81,43 @@ export const useRestaurantStore = defineStore('restaurant', () => {
         return true
     }
 
+    // Obtener la reserva de una mesa en el slot activo
+    function getReservationForTable(tableId: number): Reservation | undefined {
+        return reservations.value.find(
+            (r) => r.tableId === tableId && r.timeSlot === activeTimeSlot.value,
+        )
+    }
+
+    // Mesa ocupada que se está visualizando (para ver detalles)
+    const viewingOccupiedTableId = ref<number | null>(null)
+
+    function viewOccupiedTable(tableId: number) {
+        viewingOccupiedTableId.value = tableId
+        selectedTableId.value = null
+    }
+
+    function clearViewingTable() {
+        viewingOccupiedTableId.value = null
+    }
+
+    // Cancelar una reserva existente
+    function cancelReservation(reservationId: string) {
+        reservations.value = reservations.value.filter((r) => r.id !== reservationId)
+        viewingOccupiedTableId.value = null
+    }
+
+    const viewingReservation = computed(() =>
+        viewingOccupiedTableId.value
+            ? getReservationForTable(viewingOccupiedTableId.value)
+            : undefined,
+    )
+
+    const viewingTable = computed(() =>
+        viewingOccupiedTableId.value
+            ? tables.value.find((t) => t.id === viewingOccupiedTableId.value) || null
+            : null,
+    )
+
     return {
         tables,
         reservations,
@@ -94,5 +131,12 @@ export const useRestaurantStore = defineStore('restaurant', () => {
         deselectTable,
         setTimeSlot,
         addReservation,
+        getReservationForTable,
+        viewingOccupiedTableId,
+        viewOccupiedTable,
+        clearViewingTable,
+        cancelReservation,
+        viewingReservation,
+        viewingTable,
     }
 })
